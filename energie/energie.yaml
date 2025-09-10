@@ -57,7 +57,7 @@ metadata:
 spec:
   containers:
     - name: energy-scripts
-      image: jessemirza/energy-price-send:0.1
+      image: jessemirza/prijs:0.1.2
       envFrom:
         - configMapRef:
             name: price-configmap
