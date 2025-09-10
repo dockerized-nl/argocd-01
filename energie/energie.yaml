@@ -53,21 +53,26 @@ spec:
       persistentVolumeClaim:
         claimName: 'my-pvc'
 ---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: price-cronjob
+spec:
   schedule: "02 15 * * *"
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-          - name: get-price2
-            image: jessemirza/energy-price:0.1
-            imagePullPolicy: IfNotPresent
-            command:
-              - python3
-              - /app/price.py
-            volumeMounts:
-            - mountPath: /app
-              name: app
+            - name: get-price2
+              image: jessemirza/energy-price:0.1
+              imagePullPolicy: IfNotPresent
+              command:
+                - python3
+                - /app/price.py
+              volumeMounts:
+                - mountPath: /app
+                  name: app
           restartPolicy: OnFailure
           volumes:
             - name: app
