@@ -1,0 +1,77 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: my-pv
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /app
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - oracle.dockerized.nl
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: price-pod
+spec:
+  containers:
+    - name: energy-scripts
+      image: jessemirza/energy-price-send:0.1
+      envFrom:
+        - configMapRef:
+            name: price-configmap
+      volumeMounts:
+      - mountPath: /app
+        name: app
+  volumes:
+    - name: app
+      persistentVolumeClaim:
+        claimName: 'my-pvc'
+---
+  schedule: "02 15 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: get-price2
+            image: jessemirza/energy-price:0.1
+            imagePullPolicy: IfNotPresent
+            command:
+              - python3
+              - /app/price.py
+            volumeMounts:
+            - mountPath: /app
+              name: app
+          restartPolicy: OnFailure
+          volumes:
+            - name: app
+              persistentVolumeClaim:
+                claimName: 'my-pvc'
+
