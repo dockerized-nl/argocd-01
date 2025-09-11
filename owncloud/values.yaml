@@ -1,0 +1,15 @@
+# k8s/owncloud/values.yaml
+existingSecret: owncloud-secrets
+# Or inject specific keys as env:
+extraEnvVars:
+  - name: OWNCLOUD_ADMIN_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: owncloud-secrets
+        key: owncloudAdminUser
+  - name: OWNCLOUD_ADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: owncloud-secrets
+        key: owncloudAdminPassword
+
