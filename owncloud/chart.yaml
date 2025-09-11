@@ -1,0 +1,7 @@
+apiVersion: v2
+name: owncloud-wrapper
+version: 0.1.0
+dependencies:
+  - name: owncloud
+    version: 12.2.15
+    repository: https://charts.bitnami.com/bitnami
