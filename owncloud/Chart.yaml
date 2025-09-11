@@ -1,0 +1,9 @@
+apiVersion: v2
+name: owncloud-wrapper
+description: A wrapper chart to deploy OwnCloud via Bitnami repo
+type: application
+version: 0.1.0
+dependencies:
+  - name: owncloud
+    version: 12.2.15       # <-- pin to a version from `helm search repo bitnami/owncloud`
+    repository: https://charts.bitnami.com/bitnami
